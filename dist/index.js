@@ -4785,7 +4785,12 @@ const OctoClient_1 = __webpack_require__(407);
 const utils_1 = __webpack_require__(608);
 class GitHubHelper {
     constructor() {
-        this.getCurrentWorkflowRuns = (branch, workflowFileName) => this.octokit.actions.listWorkflowRuns(Object.assign(Object.assign({}, utils_1.getRepositoryInformation()), { branch, workflow_id: workflowFileName }));
+        this.getCurrentWorkflowRuns = (branch, workflowFileName) => this.octokit.actions.listWorkflowRuns(Object.assign(Object.assign({}, utils_1.getRepositoryInformation()), { branch, 
+            // @ts-ignore
+            workflow_id: workflowFileName, 
+            // @ts-ignore
+            status: "in_progress" }));
+        this.cancelWorkflowRunById = (runId) => this.octokit.actions.cancelWorkflowRun(Object.assign(Object.assign({}, utils_1.getRepositoryInformation()), { run_id: runId }));
         this.octokit = new OctoClient_1.Octokit({ auth: utils_1.getGithubToken() });
     }
 }
@@ -4822,7 +4827,16 @@ const workFlowFileName = core.getInput('workflow-file-name');
 const githubHelper = new GithubHelper_1.GitHubHelper();
 githubHelper
     .getCurrentWorkflowRuns(branch, workFlowFileName)
-    .then(res => console.log(res))
+    .then(res => {
+    if (res.data.total_count > 1) {
+        const workflowRuns = res.data.workflow_runs;
+        workflowRuns.shift();
+        workflowRuns.forEach(workflowRun => {
+            githubHelper.cancelWorkflowRunById(workflowRun.id)
+                .then(res => console.log(`Workflow run with ID ${workflowRun.id} has now status ${res.data.status}`));
+        });
+    }
+})
     .catch(e => core.setFailed(e.message));
 //# sourceMappingURL=index.js.map
 

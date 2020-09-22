@@ -8,5 +8,14 @@ const githubHelper = new GitHubHelper();
 
 githubHelper
     .getCurrentWorkflowRuns(branch, workFlowFileName)
-        .then(res => console.log(res.data))
-      .catch(e => core.setFailed(e.message));
+        .then(res => {
+            if(res.data.total_count > 1) {
+                const workflowRuns = res.data.workflow_runs;
+                workflowRuns.shift();
+                workflowRuns.forEach(workflowRun => {
+                    githubHelper.cancelWorkflowRunById(workflowRun.id)
+                        .then(() => console.log(`Cancel Workflow run with ID ${workflowRun.id}.`))
+                });
+            }
+        })
+        .catch(e => core.setFailed(e.message));

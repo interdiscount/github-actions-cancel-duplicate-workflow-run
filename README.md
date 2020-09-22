@@ -1,5 +1,5 @@
-# Merge Pull Request
-Merge a Pull Request in your Workflow.
+# Cancel duplicate Workflow run
+Cancel duplicate Workflow runs, this will make your github actions more efficient.
 
 ## Inputs
 
@@ -7,25 +7,20 @@ Merge a Pull Request in your Workflow.
 
 **Required** The Token to interact with the Github API.
 
-### `head-branch`
+### `workflow-file-name`
 
-**Required** Branch to merge into base branch.
+**Required** Name of the Workflow you would like to cancel.
 
-### `base-branch`
+### `branch`
 
-**Required** Base Branch to merge into.
-
-### `label-name`
-
-**Required** Label to filter. Default `"automerge"`.
+**Required** Branch the workflow runs on.
 
 ## Example usage
 
 ```
-uses: interdiscount/github-actions-create-pull-request@master
+uses: interdiscount/github-actions-cancel-duplicate-workflow-run@1.0.0
 with:
   github-token: ${{ secrets.GITHUB_TOKEN }}
-  head-branch: "acceptance"
-  base-branch: "development"
-  label-name: "automerge"
+  workflow-file-name: "workflow.yml"
+  branch: ${GITHUB_REF##*/}
 ```
