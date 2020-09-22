@@ -1,0 +1,15 @@
+name: 'Cancel Workflow run'
+description: 'Cancel duplicate Workflow run'
+inputs:
+  github-token:
+    description: 'token for github'
+    required: true
+  workflow-file-name:
+    description: 'The name of the workflow file'
+    required: true
+  branch:
+    description: 'branch which runs the workflow'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
