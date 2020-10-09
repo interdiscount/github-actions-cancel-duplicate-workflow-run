@@ -14,4 +14,4 @@ export const getRepositoryInformation = (): RepositoryInformation => {
   };
 };
 
-export const getGithubToken = () => core.getInput('github-token');
+export const getGithubToken = (): string => core.getInput('github-token');
